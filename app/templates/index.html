@@ -1,0 +1,107 @@
+{% extends "bootstrap/base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> 
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">65News</a> </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+   
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+
+{% block content %}
+    <div class="container">
+    {% for message in get_flashed_messages() %} 
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+        {% block page_content %}
+
+    <div class="row">
+    	<div class="col-md-8">
+		{% for post in posts %}
+		<div class="article">
+			<div class="article_left">
+				<div class="article_img ">
+					<img src="{{post.img_href}}" alt="" class="img-responsive">
+				</div>
+				<div class="article_category">
+					{{ post.category }}
+				</div>
+			</div>	
+			<div class="article_right">
+				<div class="article_title">
+				<a href="{{url_for('article', id=post.id)}}">{{post.title}}</a>
+				</div>
+				<div class="article_summary">
+					{{post.summary}}
+				</div>
+				<div class="extra_properties">
+					<div class="article_keywords">
+						{% for keyword in post.keywords.split(',') %}
+							{{keyword}} 
+							{# split the keywords using the split() method is easy #}
+						{% endfor %}
+						
+					</div>
+					<div class="article_pubdate">
+						{% if moment(post.timestamp).fromNow() > 2 %}
+							{{moment(post.timestamp).format('L')}}
+							{% else %}
+							{{moment(post.timestamp).fromNow()}}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+
+			</div>
+		{% endfor %}
+
+		<div class="pagniation">
+			{{ macros.pagination_widget(pagination, 'index')}}
+		</div>
+    	</div>
+
+    	<div class="col-md-4">
+    		推荐阅读
+    	</div>
+	
+
+
+	</div>
+
+            
+        {% endblock %}
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{moment.include_moment()}}
+    {{ moment.lang('zh-CN')}}
+{% endblock %}
+

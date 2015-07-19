@@ -1,0 +1,85 @@
+{% extends "bootstrap/base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> 
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">65News</a> </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+   
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="article_content">
+
+				<div class="article_title">
+					{{post.title}}
+				</div>
+				<div class="article-pubdate">
+				{% if moment(post.timestamp).fromNow() > 2 %}
+					{{moment(post.timestamp).format('LL')}}
+					{% else %}
+					{{moment(post.timestamp).fromNow()}}
+				{% endif %}
+				</div>
+			<div class="article-author">
+				
+			</div>
+			<div class="article-body">
+					{{ post.body_html | safe }} 
+					{# The | safe suffix when rendering the HTML body is there to tell Jinja2 not to escape the HTML elements.  #}
+			</div>
+
+					<div class="article_navigation row">
+			<div class="article_prev col-md-6">
+				{% if article_prev %}
+					<a href="{{ url_for('article', id=post.id-1) }}" title="{{article_prev.title}}">上一篇：{{article_prev.title}}</a>
+				{% endif %}
+			</div>
+
+			<div class="article_next col-md-6">
+				{% if article_next %}
+					<a href="{{ url_for('article', id=post.id+1) }}" title="{{article_next.title}}">下一篇：{{article_next.title}}</a>
+				{% endif %}
+			</div>
+		</div>
+		</div>
+
+
+		</div>
+
+		<div class="col-md-4"></div>
+	</div>	
+</div>
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    {{moment.include_moment()}}
+    {{ moment.lang('zh-CN')}}
+{% endblock %}
