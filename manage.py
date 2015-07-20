@@ -9,7 +9,8 @@ from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 from config import config
 
-app = create_app(os.environ.get('SCRAPING_CONFIG') or config.get('default')
+app = create_app(os.environ.get('SCRAPING_CONFIG') or 'default')
+
 manager = Manager(app)
 migrate = Migrate(app, db)
 
@@ -19,27 +20,27 @@ from flask import current_app, redirect, render_template, session, url_for, flas
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # posts = Post.query.order_by(Post.timestamp.desc()).all()
-    page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
-    posts = pagination.items
-    return render_template('index.html', posts=posts, pagination=pagination)
+	# posts = Post.query.order_by(Post.timestamp.desc()).all()
+	page=request.args.get('page', 1, type=int)
+	pagination=Post.query.order_by(Post.timestamp.desc()).paginate(
+		page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
+	posts=pagination.items
+	return render_template('index.html', posts=posts, pagination=pagination)
 
 
 @app.route('/article/<date>/<int:id>')
 def article(id, date):
-    post = Post.query.filter_by(id=id).first()
-    article_prev = Post.query.filter_by(id=id-1).first()
-    article_next = Post.query.filter_by(id=id+1).first()
-    return render_template('article.html', post=post, article_prev=article_prev, article_next=article_next)
+	post=Post.query.filter_by(id=id).first()
+	article_prev=Post.query.filter_by(id=id-1).first()
+	article_next=Post.query.filter_by(id=id+1).first()
+	return render_template('article.html', post=post, article_prev=article_prev, article_next=article_next)
 
 
 def make_shell_context():
-    return dict(app=app, db=db, Role=Role, User=User, Post=Post)
+	return dict(app=app, db=db, Role=Role, User=User, Post=Post)
 manager.add_command('shell', Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
 
 
 if __name__ == '__main__':
-    manager.run()
+	manager.run()
