@@ -7,8 +7,9 @@ from app import create_app, db
 from app.models import User, Role, Post
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
+from config import config
 
-app = create_app(os.environ.get('SCRAPING_CONFIG') or 'default')
+app = create_app(os.environ.get('SCRAPING_CONFIG') or config.get('default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
@@ -25,12 +26,13 @@ def index():
     posts = pagination.items
     return render_template('index.html', posts=posts, pagination=pagination)
 
-@app.route('/article/<int:id>')
-def article(id):
-	post = Post.query.filter_by(id=id).first()
-	article_prev = Post.query.filter_by(id=id-1).first()
-	article_next = Post.query.filter_by(id=id+1).first()
-	return render_template('article.html', post=post, article_prev=article_prev, article_next=article_next)
+
+@app.route('/article/<date>/<int:id>')
+def article(id, date):
+    post = Post.query.filter_by(id=id).first()
+    article_prev = Post.query.filter_by(id=id-1).first()
+    article_next = Post.query.filter_by(id=id+1).first()
+    return render_template('article.html', post=post, article_prev=article_prev, article_next=article_next)
 
 
 def make_shell_context():

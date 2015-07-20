@@ -53,7 +53,7 @@
 			</div>	
 			<div class="article_right">
 				<div class="article_title">
-				<a href="{{url_for('article', id=post.id)}}">{{post.title}}</a>
+				<a href="{{url_for('article', id=post.id, date=post.date, _external=True)}}">{{post.title}}</a>
 				</div>
 				<div class="article_summary">
 					{{post.summary}}
@@ -61,17 +61,21 @@
 				<div class="extra_properties">
 					<div class="article_keywords">
 						{% for keyword in post.keywords.split(',') %}
-							{{keyword}} 
+							<a href="" class="keyword_search">{{keyword}} </a>
 							{# split the keywords using the split() method is easy #}
 						{% endfor %}
 						
 					</div>
 					<div class="article_pubdate">
-						{% if moment(post.timestamp).fromNow() > 2 %}
+{# 						{% if moment(post.timestamp) %}
+						
 							{{moment(post.timestamp).format('L')}}
 							{% else %}
 							{{moment(post.timestamp).fromNow()}}
-						{% endif %}
+						{% endif %} #}
+						{{moment(post.timestamp, local=True).fromNow()}}
+
+						{# {{moment(post.timestamp).fromNow()}} #}
 					</div>
 				</div>
 			</div>

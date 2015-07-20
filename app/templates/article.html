@@ -2,8 +2,10 @@
 {% import "_macros.html" as macros %}
 
 {% block head %}
+<title>{{post.title}}</title>
 {{ super() }}
 <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+
 {% endblock %}
 
 {% block navbar %}
@@ -41,16 +43,19 @@
 					{{post.title}}
 				</div>
 				<div class="article-pubdate">
-				{% if moment(post.timestamp).fromNow() > 2 %}
+				{# {% if moment(post.timestamp).fromNow() > 2 %}
 					{{moment(post.timestamp).format('LL')}}
 					{% else %}
 					{{moment(post.timestamp).fromNow()}}
-				{% endif %}
+				{% endif %} #}
+				{{moment(post.timestamp, local=True).format('LLL')}}
+
+				{# choose a better format #}
 				</div>
-			<div class="article-author">
-				
+			<div class="article-source">
+				来源：{{ post.source}}
 			</div>
-			<div class="article-body">
+			<div class="article_body">
 					{{ post.body_html | safe }} 
 					{# The | safe suffix when rendering the HTML body is there to tell Jinja2 not to escape the HTML elements.  #}
 			</div>
@@ -58,13 +63,13 @@
 					<div class="article_navigation row">
 			<div class="article_prev col-md-6">
 				{% if article_prev %}
-					<a href="{{ url_for('article', id=post.id-1) }}" title="{{article_prev.title}}">上一篇：{{article_prev.title}}</a>
+					<a href="{{ url_for('article', id=article_prev.id, date=article_prev.date, _external=True) }}" title="{{article_prev.title}}">上一篇：{{article_prev.title}}</a>
 				{% endif %}
 			</div>
 
 			<div class="article_next col-md-6">
 				{% if article_next %}
-					<a href="{{ url_for('article', id=post.id+1) }}" title="{{article_next.title}}">下一篇：{{article_next.title}}</a>
+					<a href="{{ url_for('article', id=article_next.id, date=article_next.date, _external=True) }}" title="{{article_next.title}}">下一篇：{{article_next.title}}</a>
 				{% endif %}
 			</div>
 		</div>
