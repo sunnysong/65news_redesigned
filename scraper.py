@@ -20,7 +20,8 @@ def load_url(url):
 	by default, it will start with page 2
 
 	"""
-	driver = webdriver.Firefox()
+	# driver = webdriver.Firefox()
+	driver = webdriver.PhantomJS()
 	driver.get(url)
 	WebDriverWait(driver, 500).until(
 		EC.presence_of_element_located((By.CLASS_NAME, "articleDetailList")))
