@@ -12,8 +12,8 @@ class Permission:
 	WRITE_ARTICLES = 0x04
 	ADMINISTER = 0x80
 	COMMENT = 0x02
-    FOLLOW = 0x01
-    MODERATE_COMMENTS = 0x08
+	FOLLOW = 0x01
+	MODERATE_COMMENTS = 0x08
 
 class Role(db.Model):
 	__tablename__ = 'roles'
@@ -89,7 +89,7 @@ class Post(db.Model):
 	img_href = db.Column(db.String(120))
 	category = db.Column(db.String(32), index=True)
 
-	#add a recent column to track whether the post is recently added to the site
+	# add a recent column to track whether the post is recently added to the site
 
 	def __init__(self, title, summary, source, timestamp, keywords, img_href, body_html):
 		self.title = title
