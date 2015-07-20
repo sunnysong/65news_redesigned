@@ -1,4 +1,10 @@
+
 import os
+import psycopg2
+import urlparse
+
+urlparse.uses_netloc.append("postgres")
+# url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 class Config(object):
     DEBUG = False
@@ -6,7 +12,7 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = 'findhowtomakeasecretekey'
     POSTS_PER_PAGE = 10
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URL') or 'postgres://vhuvzbqunrckxz:GdYjT1oIe3urNuE5Xf7x7LgLc-@ec2-54-83-20-177.compute-1.amazonaws.com:5432/d9sj9dn3q67lei' 
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URL') or urlparse.urlparse(os.environ["DATABASE_URL"]) 
 
     @staticmethod
     def init_app(app):

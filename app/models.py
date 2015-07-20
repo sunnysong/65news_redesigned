@@ -12,7 +12,8 @@ class Permission:
 	WRITE_ARTICLES = 0x04
 	ADMINISTER = 0x80
 	COMMENT = 0x02
-
+    FOLLOW = 0x01
+    MODERATE_COMMENTS = 0x08
 
 class Role(db.Model):
 	__tablename__ = 'roles'
