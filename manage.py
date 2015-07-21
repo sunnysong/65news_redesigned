@@ -7,14 +7,50 @@ from app import create_app, db
 from app.models import User, Role, Post
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.fileadmin import FileAdmin
+import os.path as op
+
+from datetime import datetime
+from flask import redirect, render_template, session, url_for, flash, request, current_app
+
+
+from wtforms import TextAreaField
+from wtforms.widgets import TextArea
+
+
+class CKTextAreaWidget(TextArea):
+    def __call__(self, field, **kwargs):
+        if kwargs.get('class'):
+            kwargs['class'] += " ckeditor"
+        else:
+            kwargs.setdefault('class', 'ckeditor')
+        return super(CKTextAreaWidget, self).__call__(field, **kwargs)
+
+
+class CKTextAreaField(TextAreaField):
+    widget = CKTextAreaWidget()
+
+
+class CKAdmin(ModelView):
+    form_overrides = dict(textarea=CKTextAreaField)
+    create_template = 'ckeditor.html'
+    edit_template = 'ckeditor.html'
+
 
 app = create_app(os.environ.get('SCRAPING_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
-from datetime import datetime
-from flask import redirect, render_template, session, url_for, flash, request, current_app
 
+admin = Admin(app, template_mode='bootstrap3')
+admin.add_view(CKAdmin(User, db.session))
+admin.add_view(CKAdmin(Post, db.session))
+admin.add_view(CKAdmin(Role, db.session))
+
+path = op.join(op.dirname(__file__), 'app/static')
+admin.add_view(FileAdmin(path, '/static/', name='Static Files'))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
