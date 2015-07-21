@@ -1,0 +1,58 @@
+{% extends "bootstrap/base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> 
+            	<span class="sr-only">Toggle navigation</span> 
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"><img src="{{url_for('static', filename='img/logo.png')}}" alt="site logo"></a> </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="{{url_for('sections', category='news')}}">新闻</a></li>
+                <li><a href="/">时评</a></li>
+                <li><a href="{{url_for('sections', category='industry')}}">行业</a></li>
+                <li><a href="/">企业</a></li>
+                <li><a href="{{url_for('sections', category='policy')}}">政策</a></li>
+                <li><a href="{{url_for('sections', category='baike')}}">百科</a></li>
+                <li><a href="/">专题</a></li>
+   
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+
+{% block content %}
+
+{% block footer %}
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">Place sticky footer content here.</p>
+      </div>
+    </footer>
+{% endblock  %}
+
+{% endblock %}
+
+
+
+{% block scripts %}
+    {{ super() }}
+    {{moment.include_moment()}}
+    {{ moment.lang('zh-CN')}}
+{% endblock %}

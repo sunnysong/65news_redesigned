@@ -20,8 +20,7 @@ def load_url(url):
 	by default, it will start with page 2
 
 	"""
-	# driver = webdriver.Firefox()
-	driver = webdriver.PhantomJS()
+	driver = webdriver.Firefox()
 	driver.get(url)
 	WebDriverWait(driver, 500).until(
 		EC.presence_of_element_located((By.CLASS_NAME, "articleDetailList")))
@@ -92,7 +91,21 @@ def make_post(bsObj):
 		title = each.find('div', {'class': 'content'}).h4.get_text()
 		# get summary
 		posted = Post.query.filter_by(title=title).first()
-		if not posted:
+
+		site = 'http://120.24.245.101/info/view/container/index/'
+		detail_url = site + each.find('h4').a.attrs['href']
+
+
+		# load the detail page, make page soup
+		detail_page = load_url(detail_url)
+		detail_soup = make_detail_soup(detail_page)
+
+		if posted:
+			# update its category
+			posted.category = detail_soup.find('span', {'id':'local'}).get_text()
+			db.session.add(posted)
+			db.session.commit()
+		else:
 			summary = each.p.get_text()
 
 			# get keywords
@@ -111,15 +124,6 @@ def make_post(bsObj):
 				href = ''
 			# how to deal with articles that did not upload imgs
 
-			site = 'http://120.24.245.101/info/view/container/index/'
-			detail_url = site + each.find('h4').a.attrs['href']
-
-
-			# load the detail page, make page soup
-			detail_page = load_url(detail_url)
-			detail_soup = make_detail_soup(detail_page)
-
-
 			# get timestamp
 			timestamp = detail_soup.find('span', {'class':'article_time'}).get_text()
 			# 2015-07-08 14:10:40
@@ -131,12 +135,13 @@ def make_post(bsObj):
 
 			# get source
 			source = detail_soup.find('span', {'class':'article_source'}).get_text()
-
+			category = detail_soup.find('span', {'id':'local'}).get_text()
 			#update model, database
 
 
 			# (self, title, summary, source, timestamp, keywords, img_href, body_html)
 			post = Post(title, summary, source, timestamp, keywords, href, body_html)
+			post.category = category
 			db.session.add(post)
 			db.session.commit()
 		

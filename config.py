@@ -12,7 +12,7 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = 'findhowtomakeasecretekey'
     POSTS_PER_PAGE = 10
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URL') or os.environ["DATABASE_URL"]
+    SQLALCHEMY_DATABASE_URI = "postgres://tgyfurejthgdua:xHsGpxXUfR-mbdd2hGNH78Jn97@ec2-54-83-20-177.compute-1.amazonaws.com:5432/dfi4f30499l1s8" or os.environ.get('SQLALCHEMY_DATABASE_URL') or os.environ["DATABASE_URL"]
 
     @staticmethod
     def init_app(app):

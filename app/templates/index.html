@@ -1,33 +1,13 @@
-{% extends "bootstrap/base.html" %}
-{% import "_macros.html" as macros %}
+{% extends "base.html" %}
 
 {% block head %}
-{{ super() }}
-<link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
-{% endblock %}
-
-{% block navbar %}
-<div class="navbar navbar-inverse" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> 
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">65News</a> </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/">首页</a></li>
-   
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                
-            </ul>
-        </div>
-    </div>
-</div>
-{% endblock %} 
+	{% if category %}
+		<title>65News - {{category}}</title>
+		{% else %}
+		<title>65News - 首页</title>
+	{% endif %}
+	{{super()}}
+{% endblock%}
 
 {% block content %}
     <div class="container">
@@ -47,7 +27,12 @@
 				<div class="article_img ">
 					<img src="{{post.img_href}}" alt="" class="img-responsive">
 				</div>
-				<div class="article_category">
+				<div class="article_category" style="
+				{% if post.category == '新闻' %}background:teal;
+					{% elif post.category == '行业'%} background: navy;
+					{% elif post.category == '政策'%} background: purple;
+					{% elif post.category == '百科'%} background: brown;
+				{% endif %}">
 					{{ post.category }}
 				</div>
 			</div>	
@@ -85,12 +70,52 @@
 		{% endfor %}
 
 		<div class="pagniation">
-			{{ macros.pagination_widget(pagination, 'index')}}
+			{% if category %}
+				{{ macros.pagination_widget(pagination, 'sections', category=category)}}
+				{% else %}
+				{{ macros.pagination_widget(pagination, 'index')}}
+
+				{# reuse the index template for sections of stories like industry, market, companies #}
+			{% endif %}
 		</div>
     	</div>
 
     	<div class="col-md-4">
-    		推荐阅读
+    		
+    		<div class="trending_articles">
+	    		<h3>推荐阅读</h3>
+	    		<ul class="liked_posts">
+	    		{% for post in liked_posts %}
+	    			<li><a href="{{url_for('article', id=post.id, date=post.date)}}">{{post.title}}</a></li>
+	    		{% endfor %}
+	    		</ul>
+    		</div>
+
+
+    		<div class="trending_articles">
+	    		<h3>今日热门</h3>
+	    		<ul class="liked_posts">
+	    		{% for post in liked_posts %}
+	    			<li><a href="{{url_for('article', id=post.id, date=post.date)}}">{{post.title}}</a></li>
+	    		{% endfor %}
+	    		</ul>
+    		</div>	
+    		<div class="trending_articles">
+	    		<h3>一周排行</h3>
+	    		<ul class="liked_posts">
+	    		{% for post in liked_posts %}
+	    			<li><a href="{{url_for('article', id=post.id, date=post.date)}}">{{post.title}}</a></li>
+	    		{% endfor %}
+	    		</ul>
+    		</div>	
+    		<div class="trending_articles">
+	    		<h3>评论最多</h3>
+	    		<ul class="liked_posts">
+	    		{% for post in liked_posts %}
+	    			<li><a href="{{url_for('article', id=post.id, date=post.date)}}">{{post.title}}</a></li>
+	    		{% endfor %}
+	    		</ul>
+    		</div>	
     	</div>
 	
 
@@ -101,11 +126,9 @@
         {% endblock %}
     </div>
 
+    {{ super() }}
+
 {% endblock %}
 
-{% block scripts %}
-    {{ super() }}
-    {{moment.include_moment()}}
-    {{ moment.lang('zh-CN')}}
-{% endblock %}
+
 
